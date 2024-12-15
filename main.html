@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Protected Images</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+        .login-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: fadeIn 1.5s ease;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #00d4ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #009ac0;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Protected Login</h2>
+        <input type="password" id="keyInput" placeholder="Enter your access key">
+        <button onclick="validateKey()">Login</button>
+        <div class="error" id="errorMessage">Invalid key or already used!</div>
+    </div>
+
+    <script>
+        // Example key-IP tracking (simulate server-side logic)
+        const keys = {
+            "12345": "", // Key 12345 is unused
+            "abcde": "", // Key abcde is unused
+        };
+
+        function getIP(callback) {
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => callback(data.ip))
+                .catch(() => callback("0.0.0.0"));
+        }
+
+        function validateKey() {
+            const inputKey = document.getElementById('keyInput').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            getIP((userIP) => {
+                if (keys[inputKey] === undefined) {
+                    errorMessage.style.display = 'block';
+                } else if (keys[inputKey] && keys[inputKey] !== userIP) {
+                    errorMessage.style.display = 'block';
+                } else {
+                    // Mark key as used with the current IP
+                    keys[inputKey] = userIP;
+                    window.location.href = 'protected.html';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
